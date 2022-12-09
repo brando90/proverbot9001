@@ -1,72 +1,33 @@
 #!/usr/bin/env bash
 
-# -
-which python
+echo running: $0
 
-# -
-
+# - install Ruby, as that is for some reason required to build the "system" project
 if ! command -v ruby &> /dev/null
 then
-    echo "Going to try to install ruby (ideally 3.1.2)"
-    ruby -v
-#    # First, install Ruby, as that is for some reason required to build
-#    # the "system" project
-#    git clone https://github.com/rbenv/ruby-build.git ~/ruby-build
-#    mkdir -p ~/.local
-#    PREFIX=~/.local ./ruby-build/install.sh
-#    ~/.local/ruby-build 3.1.2 ~/.local/
-# ref: https://superuser.com/questions/340490/how-to-install-and-use-different-versions-of-ruby/1756372#1756372
-    mkdir ~/.rbenv
-    cd ~/.rbenv
-    git clone https://github.com/rbenv/rbenv.git .
-
-    export PATH="$HOME/.rbenv/bin:$PATH"
-    eval "$(rbenv init -)"
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc.user
-    echo 'eval "$(rbenv init -)"' >> ~/.bashrc.user
-    #    exec $SHELL
-    # bash
-
-    rbenv -v
-
-    # - install ruby-build
-    mkdir ~/.ruby-build
-    cd ~/.ruby-build
-    git clone https://github.com/rbenv/ruby-build.git .
-
-    export PATH="$HOME/.ruby-build/bin:$PATH"
-    echo 'export PATH="$HOME/.ruby-build/bin:$PATH"' >> ~/.bashrc.user
-    #    exec $SHELL
-    # bash
-
-    ruby-build --version
-
-    # - install ruby without sudo -- now that ruby build was install
-    mkdir -p ~/.local
-    #    ruby-build 3.1.2 ~/.local/
-    rbenv install 3.1.2
-    rbenv global 3.1.2
-
+    sh ~/pycoq/install_ruby_snap.sh
     ruby -v
 fi
 
+# - I think this pulls the coq projects properly in proverbot
 git submodule update && git submodule init
 
-# Sync opam state to local
+# - Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
 #rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
 
-# Create the 8.10 switch
+# - Create the 8.10 switch
+#opam switch
 #opam switch create coq-8.10 4.07.1
 #eval $(opam env --switch=coq-8.10 --set-switch)
 #opam pin add -y coq 8.10.2
-# - since prev create a switch, check the version our coq, VPs coq is 8.11.0
-# opam switch ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1
-# eval $(opam env)
-# above should already but on from Dockerfile
-# opam switch
-# opam list
 
-# Install dependency packages for 8.10
+# - Use pycoq's switch
+#opam switch create ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1 ocaml-variants.4.07.1+flambda
+#opam switch ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1
+eval $(opam env --switch=ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1 --set-switch)
+#opam pin add -y coq 8.11.0
+
+# - Install dependency packages for coq 8.10 (this might fail since this VPs switch is:
 opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
 opam repo add coq-released https://coq.inria.fr/opam/released
 opam repo add psl-opam-repository https://github.com/uds-psl/psl-opam-repository.git
@@ -136,9 +97,6 @@ git clone git@github.com:uwplse/cheerios.git deps/cheerios
 (cd coq-projects/verdi && opam install -y --ignore-constraints-on=coq . )
 (cd coq-projects/fcsl-pcm && make "$@" && make install)
 
-# Finally, sync the opam state back to global
-rsync -av --delete /tmp/${USER}_dot_opam/ $HOME/.opam.dir | tqdm --desc="Writing shared opam state" > /dev/null
+# Finally, sync the opam state back to global https://github.com/UCSD-PL/proverbot9001/issues/52
+#rsync -av --delete /tmp/${USER}_dot_opam/ $HOME/.opam.dir | tqdm --desc="Writing shared opam state" > /dev/null
 
-
-# -
-which python
