@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+ruby --version
 if ! command -v ruby &> /dev/null
 then
     # First, install Ruby, as that is for some reason required to build
@@ -12,10 +13,11 @@ fi
 
 git submodule update && git submodule init
 
-# Sync opam state to local
+# Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
 rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
 
-# Create the 8.10 switch
+# Create the 8.10 switch (cmd options opam switch create SWITCH [COMPILER])
+opam switch
 opam switch create coq-8.10 4.07.1
 eval $(opam env --switch=coq-8.10 --set-switch)
 opam pin add -y coq 8.10.2

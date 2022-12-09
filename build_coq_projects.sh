@@ -50,5 +50,5 @@ for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
 
     echo "$BUILD $@" >> coq-projects/$project/make.sh
     chmod u+x coq-projects/$project/make.sh
-    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
+#    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
 done

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # see: https://github.com/UCSD-PL/proverbot9001/issues/27
 
+cd /afs/cs.stanford.edu/u/brando9/proverbot900
 echo running: $0
 
 #export OUT_FILE=$PWD/main.sh.o$SLURM_JOBID
