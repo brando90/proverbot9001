@@ -114,9 +114,9 @@
 [submodule "coq-projects/coquelicot"]
 	path = coq-projects/coquelicot
 	url = git@github.com:HazardousPeach/coquelicot.git
-[submodule "deps/metalib"]
-	path = deps/metalib
-	url = git@github.com:plclub/metalib.git
+[submodule "coq-projects/metalib"]
+	path = coq-projects/metalib
+	url = https://github.com/plclub/metalib.git
 [submodule "coq-projects/additions"]
 	path = coq-projects/additions
 	url = git@github.com:coq-contribs/additions.git
@@ -174,3 +174,6 @@
 [submodule "coq-projects/mod-red"]
 	path = coq-projects/mod-red
 	url = git@github.com:coq-contribs/mod-red.git
+[submodule "coq-projects/lin-alg"]
+	path = coq-projects/lin-alg
+	url = git@github.com:HazardousPeach/lin-alg-8.10.git

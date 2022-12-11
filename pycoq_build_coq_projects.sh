@@ -1,19 +1,28 @@
 #!/usr/bin/env bash
 # source swarm-prelude.sh
 
-INIT_CMD="~/opam-scripts/read-opam.sh"
+echo
+
+source ~/.bashrc.user
+echo running: $PWD $0
+cd /afs/cs.stanford.edu/u/brando9/proverbot9001
+
+# - for weird umass cluster permission, we don't need it I think: https://github.com/UCSD-PL/proverbot9001/issues/54
+#INIT_CMD="~/opam-scripts/read-opam.sh"
+INIT_CMD=""
 
 NTHREADS=1
-while getopts ":j:" opt; do
-  case "$opt" in
-    j)
-      NTHREADS="${OPTARG}"
-      ;;
-  esac
-done
+#while getopts ":j:" opt; do
+#  case "$opt" in
+#    j)
+#      NTHREADS="${OPTARG}"
+#      ;;
+#  esac
+#done
 
 # Make sure ruby is in the path
-export PATH=$HOME/.local/bin:$PATH
+ruby -v
+#export PATH=$HOME/.local/bin:$PATH
 
 git submodule init && git submodule update
 
@@ -50,5 +59,5 @@ for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
 
     echo "$BUILD $@" >> coq-projects/$project/make.sh
     chmod u+x coq-projects/$project/make.sh
-    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
+#    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
 done
