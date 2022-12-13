@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-source ~/.bashrc.user
-echo running: $0
+source ~/.bashrc.lfs
+conda activate iit_synthesis
 echo $HOME
 cd $HOME/proverbot9001
 realpath .

@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 # source swarm-prelude.sh
 
-echo
+#source ~/.bashrc.lfs
+#conda activate iit_synthesis
+#echo $HOME
+#cd $HOME/proverbot9001
+#realpath .
 
-source ~/.bashrc.user
-echo running: $PWD $0
-cd /afs/cs.stanford.edu/u/brando9/proverbot9001
+#echo "done setting up the .bashrc.lfs etc."
+
+#bash pycoq_build_coq_projects.sh
 
 # - for weird umass cluster permission, we don't need it I think: https://github.com/UCSD-PL/proverbot9001/issues/54
 #INIT_CMD="~/opam-scripts/read-opam.sh"
-INIT_CMD=""
+#INIT_CMD=""
 
 NTHREADS=1
 #while getopts ":j:" opt; do
@@ -24,10 +28,15 @@ NTHREADS=1
 ruby -v
 #export PATH=$HOME/.local/bin:$PATH
 
-git submodule init && git submodule update
+# - doing the git submodule thing is likely a good idea for safety but until lin-alg is fixed it's a problem
+#git submodule init && git submodule update
 
-for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
-    SBATCH_FLAGS=""
+echo "-- about to build the make files for the coq projects:"
+
+#for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
+for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
+    echo $project
+#    SBATCH_FLAGS=""
 
     echo "#!/usr/bin/env bash" > coq-projects/$project/make.sh
     echo ${INIT_CMD} >> coq-projects/$project/make.sh
@@ -38,20 +47,21 @@ for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
     else
         BUILD="make"
     fi
+#    echo $BUILD
 
-    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"build_partition\")" \
-            coqgym_projs_splits.json); then
-        PART=$(jq -r ".[] | select(.project_name == \"$project\") | .build_partition" \
-                   coqgym_projs_splits.json)
-        SBATCH_FLAGS+=" -p $PART"
-    fi
-
-    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"timeout\")" \
-         coqgym_projs_splits.json); then
-        TIMEOUT=$(jq -r ".[] | select(.project_name == \"$project\") | .timeout" \
-                     coqgym_projs_splits.json)
-        SBATCH_FLAGS+=" --time=${TIMEOUT}"
-    fi
+#    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"build_partition\")" \
+#            coqgym_projs_splits.json); then
+#        PART=$(jq -r ".[] | select(.project_name == \"$project\") | .build_partition" \
+#                   coqgym_projs_splits.json)
+#        SBATCH_FLAGS+=" -p $PART"
+#    fi
+#
+#    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"timeout\")" \
+#         coqgym_projs_splits.json); then
+#        TIMEOUT=$(jq -r ".[] | select(.project_name == \"$project\") | .timeout" \
+#                     coqgym_projs_splits.json)
+#        SBATCH_FLAGS+=" --time=${TIMEOUT}"
+#    fi
 
     SWITCH=$(jq -r ".[] | select(.project_name == \"$project\") | .switch" coqgym_projs_splits.json)
 
@@ -60,4 +70,14 @@ for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
     echo "$BUILD $@" >> coq-projects/$project/make.sh
     chmod u+x coq-projects/$project/make.sh
 #    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
+    realpath coq-projects/$project/make.sh
+    cat coq-projects/$project/make.sh
 done
+
+echo "done creating all the make files!"
+
+cd /afs/cs.stanford.edu/u/brando9/proverbot9001/CompCert/
+configure x86_64-linux
+make .
+#
+#configure x86_64-linux && make /afs/cs.stanford.edu/u/brando9/proverbot9001/CompCert/make.sh
