@@ -33,10 +33,10 @@ ruby -v
 
 echo "-- about to build the make files for the coq projects:"
 
+# change to point to absolute path
 #for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
 for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
     echo $project
-#    SBATCH_FLAGS=""
 
     echo "#!/usr/bin/env bash" > coq-projects/$project/make.sh
     echo ${INIT_CMD} >> coq-projects/$project/make.sh
@@ -47,21 +47,6 @@ for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
     else
         BUILD="make"
     fi
-#    echo $BUILD
-
-#    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"build_partition\")" \
-#            coqgym_projs_splits.json); then
-#        PART=$(jq -r ".[] | select(.project_name == \"$project\") | .build_partition" \
-#                   coqgym_projs_splits.json)
-#        SBATCH_FLAGS+=" -p $PART"
-#    fi
-#
-#    if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"timeout\")" \
-#         coqgym_projs_splits.json); then
-#        TIMEOUT=$(jq -r ".[] | select(.project_name == \"$project\") | .timeout" \
-#                     coqgym_projs_splits.json)
-#        SBATCH_FLAGS+=" --time=${TIMEOUT}"
-#    fi
 
     SWITCH=$(jq -r ".[] | select(.project_name == \"$project\") | .switch" coqgym_projs_splits.json)
 

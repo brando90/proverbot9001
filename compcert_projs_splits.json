@@ -183,7 +183,7 @@
             "common/Globalenvs.v"
         ],
         "switch": "coq-8.10",
-        "build_command": "source make.sh",
+        "build_command": "make cleam -c $HOME/proverbot9001/CompCert/",
         "original_build_command": "configure x86_64-linux && make"
     }
 ]
