@@ -50,6 +50,7 @@ for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
 
     SWITCH=$(jq -r ".[] | select(.project_name == \"$project\") | .switch" coqgym_projs_splits.json)
 
+    # todo: why not just call opam switch? or `opam switch set {$SWITCH}`
     echo "eval \"$(opam env --set-switch --switch=$SWITCH)\"" >> coq-projects/$project/make.sh
 
     echo "$BUILD $@" >> coq-projects/$project/make.sh
