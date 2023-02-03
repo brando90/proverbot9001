@@ -3,7 +3,7 @@
 # -- Install Opam : Opam is for managing OCaml compiler(s), tools, and libraries. But it can be used for related things e.g. Coq Theorem Prover.
 source $HOME/proverbot9001/install_opam.sh
 
-# -- install Ruby
+# -- install Ruby, as that is for some reason required to build the "system" project
 if command -v ruby &>/dev/null; then
   echo "Ruby is installed and its version is $(ruby -v)."
 else
@@ -12,9 +12,16 @@ else
 fi
 ruby -v
 
+# - In case it's needed before running gitsubmodle add. If the submodules bellow have branches your local project doesn't know about from the submodules upstream
+git fetch
+
+# -- Pull metalib explicitly 1st before doing the standard git submodule "pulls/inits" (for now hope to fix later so git "pull" does it all)
 # - I think this pulls the coq projects properly in proverbot
-# todo, metalib missing, how do I pull it with gitsubmodules? https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
-#rm -rf coq-projects/metalib
+# todo: Q: metalib missing, how do I pull it with original git submodule commands?
+# todo, link1: https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
+# todo, link2: https://github.com/UCSD-PL/proverbot9001/issues/59
+# todo, link3: https://github.com/UCSD-PL/proverbot9001/issues/60
+# ### rm -rf coq-projects/metalib  # why?
 git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
 
 # todo: can't make it work: https://stackoverflow.com/questions/74757702/why-is-git-submodules-saying-there-isnt-a-url-when-there-is-one-even-when-i-try, https://github.com/UCSD-PL/proverbot9001/issues/61
@@ -30,6 +37,9 @@ git submodule add -f --name coq-projects/metalib https://github.com/plclub/metal
 # note you might have to delete the contents of those path above for it to work
 # you might also need to update the .gitmodules manually, make sure no double counts
 git submodule update && git submodule init
+
+
+
 
 # - Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
 #rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
