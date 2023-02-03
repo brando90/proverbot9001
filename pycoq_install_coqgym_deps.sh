@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
+# -- Install Opam : Opam is for managing OCaml compiler(s), tools, and libraries. But it can be used for related things e.g. Coq Theorem Prover.
+source $HOME/proverbot9001/install_opam.sh
+
+# -- install Ruby
 if command -v ruby &>/dev/null; then
   echo "Ruby is installed and its version is $(ruby -v)."
 else
   echo "Ruby is not installed, going to install it..."
   source $HOME/proverbot9001/install_ruby_snap.sh
 fi
+ruby -v
 
 # - I think this pulls the coq projects properly in proverbot
 # todo, metalib missing, how do I pull it with gitsubmodules? https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
