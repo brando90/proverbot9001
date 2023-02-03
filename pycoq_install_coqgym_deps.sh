@@ -1,22 +1,11 @@
 #!/usr/bin/env bash
 
-source ~/.bashrc.lfs
-conda activate iit_synthesis
-echo $HOME
-cd $HOME/proverbot9001
-realpath .
-
-# - install Ruby, as that is for some reason required to build the "system" project
-## idk why this doesn't work, doesn't matter for now
-#if ! command -v ruby &> /dev/null
-#then
-#    ruby -v
-#    echo ruby NOT found
-##    sh ~/pycoq/install_ruby_snap.sh
-#else
-#    echo ruby found
-#fi
-ruby -v
+if command -v ruby &>/dev/null; then
+  echo "Ruby is installed and its version is $(ruby -v)."
+else
+  echo "Ruby is not installed, going to install it..."
+  source $HOME/proverbot9001/install_ruby_snap.sh
+fi
 
 # - I think this pulls the coq projects properly in proverbot
 # todo, metalib missing, how do I pull it with gitsubmodules? https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
