@@ -35,9 +35,17 @@ git submodule add -f --name coq-projects/metalib https://github.com/plclub/metal
 #git submodule add -f --name coq-projects/lin-alg-8.10 https://github.com/HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
 #git submodule add -f --name coq-projects/lin-alg https://github.com/coq-contribs/lin-alg.git coq-projects/lin-alg
 # note you might have to delete the contents of those path above for it to work
+# -- Git submodule "pull" all submodules (and init according to how my div repo does it)
 # you might also need to update the .gitmodules manually, make sure no double counts
-git submodule update && git submodule init
-
+#git submodule update && git submodule init
+# - git submodule init initializes your local configuration file to track the submodules your repository uses, it just sets up the configuration so that you can use the git submodule update command to clone and update the submodules.
+git submodule init
+# - The --remote option tells Git to update the submodule to the commit specified in the upstream repository, rather than the commit specified in the main repository. ref: https://stackoverflow.com/questions/74988223/why-do-i-need-to-add-the-remote-to-gits-submodule-when-i-specify-the-branch?noredirect=1&lq=1
+git submodule update --init --recursive --remote
+# - for each submodule pull from the right branch according to .gitmodule file. ref: https://stackoverflow.com/questions/74988223/why-do-i-need-to-add-the-remote-to-gits-submodule-when-i-specify-the-branch?noredirect=1&lq=1
+#git submodule foreach -q --recursive 'git switch $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master || echo main )'
+# - check it's in specified branch. ref: https://stackoverflow.com/questions/74998463/why-does-git-submodule-status-not-match-the-output-of-git-branch-of-my-submodule
+git submodule status
 
 
 
