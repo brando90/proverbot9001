@@ -16,27 +16,25 @@ ruby -v
 git fetch
 
 # -- Pull metalib explicitly 1st before doing the standard git submodule "pulls/inits" (for now hope to fix later so git "pull" does it all)
+cat .gitmodules
+vim .gitmodules
 # - I think this pulls the coq projects properly in proverbot
 # todo: Q: metalib missing, how do I pull it with original git submodule commands?
 # todo, link1: https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
 # todo, link2: https://github.com/UCSD-PL/proverbot9001/issues/59
 # todo, link3: https://github.com/UCSD-PL/proverbot9001/issues/60
-# ### rm -rf coq-projects/metalib  # why?
+#rm -rf coq-projects/metalib  # why?
+# -  adds the repo to the .gitmodule & clones the repo (the -b option specifies the branch to checkout, might need to pull it later with other commands, see: https://github.com/brando90/diversity-for-predictive-success-of-meta-learning/blob/main/download_meta_dataset_mds.sh for an example)
 git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
 
 # todo: can't make it work: https://stackoverflow.com/questions/74757702/why-is-git-submodules-saying-there-isnt-a-url-when-there-is-one-even-when-i-try, https://github.com/UCSD-PL/proverbot9001/issues/61
 # todo: I suggest we use the original lin-alg https://github.com/coq-contribs/lin-alg
 #ls coq-projects/lin-alg
-#ls coq-projects/coq-projects/lin-alg
 #rm -rf coq-projects/lin-alg
-#rm -rf coq-projects/coq-projects/lin-alg
-#git submodule add -f git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
-#git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
-#git submodule add -f --name coq-projects/lin-alg-8.10 https://github.com/HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
-#git submodule add -f --name coq-projects/lin-alg https://github.com/coq-contribs/lin-alg.git coq-projects/lin-alg
-# note you might have to delete the contents of those path above for it to work
-# -- Git submodule "pull" all submodules (and init according to how my div repo does it)
-# you might also need to update the .gitmodules manually, make sure no double counts
+git submodule add -f --name coq-projects/lin-algA git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
+
+# -- Git submodule "pull" all submodules (and init it)
+# run git submodule update and the && makes sure init is only ran if the first worked  # https://github.com/UCSD-PL/proverbot9001/issues/73, https://stackoverflow.com/questions/75342383/which-should-be-ran-first-git-submodule-update-or-git-submodule-init
 #git submodule update && git submodule init
 # - git submodule init initializes your local configuration file to track the submodules your repository uses, it just sets up the configuration so that you can use the git submodule update command to clone and update the submodules.
 git submodule init
@@ -46,8 +44,6 @@ git submodule update --init --recursive --remote
 #git submodule foreach -q --recursive 'git switch $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master || echo main )'
 # - check it's in specified branch. ref: https://stackoverflow.com/questions/74998463/why-does-git-submodule-status-not-match-the-output-of-git-branch-of-my-submodule
 git submodule status
-
-
 
 # - Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
 #rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
@@ -116,7 +112,6 @@ opam install -y coq-error-handlers
 opam install -y coq-function-ninjas
 opam install -y coq-algebra
 opam install -y coq-zorns-lemma
-
 
 opam pin -y add menhir 20190626
 # coq-equations seems to rely on ocamlfind for it's build, but doesn't
