@@ -31,7 +31,8 @@ git submodule add -f --name coq-projects/metalib https://github.com/plclub/metal
 # todo: I suggest we use the original lin-alg https://github.com/coq-contribs/lin-alg
 #ls coq-projects/lin-alg
 #rm -rf coq-projects/lin-alg
-git submodule add -f --name coq-projects/lin-algA git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
+#git submodule add -f --name coq-projects/lin-alg git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
+git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg-8.10
 
 # -- Git submodule "pull" all submodules (and init it)
 # run git submodule update and the && makes sure init is only ran if the first worked  # https://github.com/UCSD-PL/proverbot9001/issues/73, https://stackoverflow.com/questions/75342383/which-should-be-ran-first-git-submodule-update-or-git-submodule-init

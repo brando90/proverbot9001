@@ -1,2 +1,0 @@
-TortoiseHareAlgorithm.vo TortoiseHareAlgorithm.glob TortoiseHareAlgorithm.v.beautified: TortoiseHareAlgorithm.v
-TortoiseHareAlgorithm.vio: TortoiseHareAlgorithm.v
