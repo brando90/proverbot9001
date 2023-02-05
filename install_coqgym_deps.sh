@@ -13,7 +13,7 @@ fi
 
 git submodule update && git submodule init
 
-# Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
+# Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52 (this can be removed for me)
 rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
 
 # Create the 8.10 switch (cmd options opam switch create SWITCH [COMPILER])

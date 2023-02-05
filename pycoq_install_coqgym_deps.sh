@@ -12,27 +12,27 @@ else
 fi
 ruby -v
 
-# - In case it's needed before running gitsubmodle add. If the submodules bellow have branches your local project doesn't know about from the submodules upstream
-git fetch
-
-# -- Pull metalib explicitly 1st before doing the standard git submodule "pulls/inits" (for now hope to fix later so git "pull" does it all)
-cat .gitmodules
-vim .gitmodules
-# - I think this pulls the coq projects properly in proverbot
-# todo: Q: metalib missing, how do I pull it with original git submodule commands?
-# todo, link1: https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
-# todo, link2: https://github.com/UCSD-PL/proverbot9001/issues/59
-# todo, link3: https://github.com/UCSD-PL/proverbot9001/issues/60
-#rm -rf coq-projects/metalib  # why?
-# -  adds the repo to the .gitmodule & clones the repo (the -b option specifies the branch to checkout, might need to pull it later with other commands, see: https://github.com/brando90/diversity-for-predictive-success-of-meta-learning/blob/main/download_meta_dataset_mds.sh for an example)
-git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
-
-# todo: can't make it work: https://stackoverflow.com/questions/74757702/why-is-git-submodules-saying-there-isnt-a-url-when-there-is-one-even-when-i-try, https://github.com/UCSD-PL/proverbot9001/issues/61
-# todo: I suggest we use the original lin-alg https://github.com/coq-contribs/lin-alg
-#ls coq-projects/lin-alg
-#rm -rf coq-projects/lin-alg
-#git submodule add -f --name coq-projects/lin-alg git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
-git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg-8.10
+## - In case it's needed before running gitsubmodle add. If the submodules bellow have branches your local project doesn't know about from the submodules upstream
+#git fetch
+#
+## -- Pull metalib explicitly 1st before doing the standard git submodule "pulls/inits" (for now hope to fix later so git "pull" does it all)
+#cat .gitmodules
+#vim .gitmodules
+## - I think this pulls the coq projects properly in proverbot
+## todo: Q: metalib missing, how do I pull it with original git submodule commands?
+## todo, link1: https://stackoverflow.com/questions/74757297/how-do-i-make-sure-to-re-add-a-submodule-correctly-with-a-git-command-without-ma
+## todo, link2: https://github.com/UCSD-PL/proverbot9001/issues/59
+## todo, link3: https://github.com/UCSD-PL/proverbot9001/issues/60
+##rm -rf coq-projects/metalib  # why?
+## -  adds the repo to the .gitmodule & clones the repo (the -b option specifies the branch to checkout, might need to pull it later with other commands, see: https://github.com/brando90/diversity-for-predictive-success-of-meta-learning/blob/main/download_meta_dataset_mds.sh for an example)
+#git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
+#
+## todo: can't make it work: https://stackoverflow.com/questions/74757702/why-is-git-submodules-saying-there-isnt-a-url-when-there-is-one-even-when-i-try, https://github.com/UCSD-PL/proverbot9001/issues/61
+## todo: I suggest we use the original lin-alg https://github.com/coq-contribs/lin-alg
+##ls coq-projects/lin-alg
+##rm -rf coq-projects/lin-alg
+##git submodule add -f --name coq-projects/lin-alg git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
+#git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
 
 # -- Git submodule "pull" all submodules (and init it)
 # run git submodule update and the && makes sure init is only ran if the first worked  # https://github.com/UCSD-PL/proverbot9001/issues/73, https://stackoverflow.com/questions/75342383/which-should-be-ran-first-git-submodule-update-or-git-submodule-init
@@ -40,29 +40,71 @@ git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPe
 # - git submodule init initializes your local configuration file to track the submodules your repository uses, it just sets up the configuration so that you can use the git submodule update command to clone and update the submodules.
 git submodule init
 # - The --remote option tells Git to update the submodule to the commit specified in the upstream repository, rather than the commit specified in the main repository. ref: https://stackoverflow.com/questions/74988223/why-do-i-need-to-add-the-remote-to-gits-submodule-when-i-specify-the-branch?noredirect=1&lq=1
-git submodule update --init --recursive --remote
+#git submodule update --init --recursive --remote
+git submodule update --init --remote
+# - updates the current branch with changes from the remote repository, and also updates all the submodules in your project
+#git pull --recurse-submodules
+#git pull --recurse-submodules --recursive
 # - for each submodule pull from the right branch according to .gitmodule file. ref: https://stackoverflow.com/questions/74988223/why-do-i-need-to-add-the-remote-to-gits-submodule-when-i-specify-the-branch?noredirect=1&lq=1
 #git submodule foreach -q --recursive 'git switch $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master || echo main )'
 # - check it's in specified branch. ref: https://stackoverflow.com/questions/74998463/why-does-git-submodule-status-not-match-the-output-of-git-branch-of-my-submodule
 git submodule status
 
-# - Sync opam state to local https://github.com/UCSD-PL/proverbot9001/issues/52
-#rsync -av --delete $HOME/.opam.dir/ /tmp/${USER}_dot_opam | tqdm --desc="Reading shared opam state" > /dev/null
+# -- create all opam switches needed for Proverbot's CoqGym
+# - Create the 8.10.2 switch
+opam switch
+opam switch create coq-8.10 4.07.1
+eval $(opam env --switch=coq-8.10 --set-switch)
+opam pin add -y coq 8.10.2
+# Install dependency packages for 8.10
+opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam repo add psl-opam-repository https://github.com/uds-psl/psl-opam-repository.git
+opam install -y coq-serapi \
+     coq-struct-tact \
+     coq-inf-seq-ext \
+     coq-cheerios \
+     coq-verdi \
+     coq-smpl \
+     coq-int-map \
+     coq-pocklington \
+     coq-mathcomp-ssreflect coq-mathcomp-bigenough coq-mathcomp-algebra\
+     coq-fcsl-pcm \
+     coq-ext-lib \
+     coq-simple-io \
+     coq-list-string \
+     coq-error-handlers \
+     coq-function-ninjas \
+     coq-algebra \
+     coq-zorns-lemma
+opam pin -y add menhir 20190626
+# coq-equations seems to rely on ocamlfind for it's build, but doesn't
+# list it as a dependency, so opam sometimes tries to install
+# coq-equations before ocamlfind. Splitting this into a separate
+# install call prevents that.
+opam install -y coq-equations \
+     coq-metacoq coq-metacoq-checker coq-metacoq-template
+# Metalib doesn't install properly through opam unless we use a
+# specific commit.
+(cd coq-projects/metalib && opam install .)
+(cd coq-projects/lin-alg && make "$@" && make install)
+# Install the psl base-library from source
+mkdir -p deps
+git clone -b coq-8.10 git@github.com:uds-psl/base-library.git deps/base-library
+(cd deps/base-library && make "$@" && make install)
+git clone git@github.com:davidnowak/bellantonicook.git deps/bellantonicook
+(cd deps/bellantonicook && make "$@" && make install)
 
-opam update
 
-# - Use pycoq's switch
-#opam switch create ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1 ocaml-variants.4.07.1+flambda
-#opam switch ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1
-#eval $(opam env --switch=ocaml-variants.4.07.1+flambda_coq-serapi.8.11.0+0.11.1 --set-switch)
-#opam pin add -y coq 8.11.0
 
-# - one of the commands bellow want coq 8.14...would be nice to
+
+
+
+# - Create the 8.14 switch (todo, why?)
 opam switch
 opam switch create coq-8.14 4.07.1
 eval $(opam env --switch=coq-8.14 --set-switch)
 opam pin add -y coq 8.14
-
 # - trying to instal with 8.14 but can't install coq 8.14
 #opam install -y coq-cheerios
 #opam install -y coq-verdi
