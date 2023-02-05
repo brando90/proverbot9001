@@ -50,34 +50,37 @@ git submodule update --init --remote
 # - check it's in specified branch. ref: https://stackoverflow.com/questions/74998463/why-does-git-submodule-status-not-match-the-output-of-git-branch-of-my-submodule
 git submodule status
 
-# -- create all opam switches needed for Proverbot's CoqGym
+# --- Install all Opam Dependencies: 1. create opam switch needed 2. then install all opam dependencies & projs
 # - Create the 8.10.2 switch
 opam switch
 opam switch create coq-8.10 4.07.1
 eval $(opam env --switch=coq-8.10 --set-switch)
 opam pin add -y coq 8.10.2
-# Install dependency packages for 8.10
+# - Install dependency packages for 8.10
 opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
+# Run `opam repository add coq-extra-dev --all-switches|--set-default' to use it in all existing switches, or in newly created switches, respectively.
+#opam repository add coq-extra-dev --all-switches
 opam repo add coq-released https://coq.inria.fr/opam/released
+#opam repository add coq-released --all-switches
 opam repo add psl-opam-repository https://github.com/uds-psl/psl-opam-repository.git
-opam install -y coq-serapi \
-     coq-struct-tact \
-     coq-inf-seq-ext \
-     coq-cheerios \
-     coq-verdi \
-     coq-smpl \
-     coq-int-map \
-     coq-pocklington \
-     coq-mathcomp-ssreflect coq-mathcomp-bigenough coq-mathcomp-algebra\
-     coq-fcsl-pcm \
-     coq-ext-lib \
-     coq-simple-io \
-     coq-list-string \
-     coq-error-handlers \
-     coq-function-ninjas \
-     coq-algebra \
-     coq-zorns-lemma
+#opam repository add psl-opam-repository --all-switches
+opam install -y coq-serapi
+opam install -y coq-struct-tact
+opam install -y coq-inf-seq-ext
+
+opam install -y coq-smpl
+opam install -y coq-int-map
+opam install -y coq-pocklington
+opam install -y coq-mathcomp-ssreflect coq-mathcomp-bigenough coq-mathcomp-algebra
+opam install -y coq-fcsl-pcm
+opam install -y coq-list-string
+opam install -y coq-error-handlers
+opam install -y coq-function-ninjas
+opam install -y coq-algebra
+opam install -y coq-zorns-lemma
 opam pin -y add menhir 20190626
+# todo: here
+
 # coq-equations seems to rely on ocamlfind for it's build, but doesn't
 # list it as a dependency, so opam sometimes tries to install
 # coq-equations before ocamlfind. Splitting this into a separate
@@ -155,8 +158,9 @@ opam install -y coq-error-handlers
 opam install -y coq-function-ninjas
 opam install -y coq-algebra
 opam install -y coq-zorns-lemma
-
 opam pin -y add menhir 20190626
+# todo HERE
+
 # coq-equations seems to rely on ocamlfind for it's build, but doesn't
 # list it as a dependency, so opam sometimes tries to install
 # coq-equations before ocamlfind. Splitting this into a separate

@@ -1,5 +1,12 @@
 # Goal: install of coq projs then use pycoq to mine data set
-hostname
+source $AFS/.bashrc.lfs
+#conda activate mds_env_gpu
+#conda activate metalearning_gpu
+conda activate iit_synthesis
+export CUDA_VISIBLE_DEVICES=5; export SLURM_JOBID=$(python -c "import random;print(random.randint(0, 1_000_000))")
+echo CUDA_VISIBLE_DEVICES = $CUDA_VISIBLE_DEVICES; echo SLURM_JOBID = $SLURM_JOBID; echo hostname = $(hostname)
+ulimit -n 120000; ulimit -Sn; ulimit -Hn
+nvidia-smi; ps -up `nvidia-smi -q -x | grep pid | sed -e 's/<pid>//g' -e 's/<\/pid>//g' -e 's/^[[:space:]]*//'`; hostname
 
 # --- make (& build) PyCoq's Proverbot's CoqGym Coq projects
 # - build dependencies
