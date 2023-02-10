@@ -39,9 +39,10 @@ ruby -v
 #git submodule update && git submodule init
 # - git submodule init initializes your local configuration file to track the submodules your repository uses, it just sets up the configuration so that you can use the git submodule update command to clone and update the submodules.
 git submodule init
-# - The --remote option tells Git to update the submodule to the commit specified in the upstream repository, rather than the commit specified in the main repository. ref: https://stackoverflow.com/questions/74988223/why-do-i-need-to-add-the-remote-to-gits-submodule-when-i-specify-the-branch?noredirect=1&lq=1
-#git submodule update --init --recursive --remote
-git submodule update --init --remote
+# -- only need git subm
+#git submodule update --init --recursive --remote  # not needed, no git repo has other submodules so --recursive not needed, --remote not needed because it might update the coq proj and make it incompatible with the coq version we use
+#git submodule update --init --remote  # not needed, --remote not needed because it might update the coq proj and make it incompatible with the coq version we use
+git submodule update --init
 # - updates the current branch with changes from the remote repository, and also updates all the submodules in your project
 #git pull --recurse-submodules
 #git pull --recurse-submodules --recursive
@@ -57,6 +58,7 @@ opam switch create coq-8.10 4.07.1
 eval $(opam env --switch=coq-8.10 --set-switch)
 opam pin add -y coq 8.10.2
 # - Install dependency packages for 8.10
+opam list
 opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
 # Run `opam repository add coq-extra-dev --all-switches|--set-default' to use it in all existing switches, or in newly created switches, respectively.
 #opam repository add coq-extra-dev --all-switches
@@ -79,18 +81,23 @@ opam install -y coq-function-ninjas
 opam install -y coq-algebra
 opam install -y coq-zorns-lemma
 opam pin -y add menhir 20190626
-# todo: here
-
 # coq-equations seems to rely on ocamlfind for it's build, but doesn't
 # list it as a dependency, so opam sometimes tries to install
 # coq-equations before ocamlfind. Splitting this into a separate
 # install call prevents that.
-opam install -y coq-equations \
-     coq-metacoq coq-metacoq-checker coq-metacoq-template
-# Metalib doesn't install properly through opam unless we use a
-# specific commit.
+opam install -y coq-equations coq-metacoq coq-metacoq-checker coq-metacoq-template
+
+# Metalib doesn't install properly through opam unless we use a specific commit.
+git submodule add -f --name coq-projects/Metalib https://github.com/plclub/Metalib.git coq-projects/Metalib
+git submodule update --init coq-projects/Metalib
 (cd coq-projects/metalib && opam install .)
+
+
+
+
+
 (cd coq-projects/lin-alg && make "$@" && make install)
+
 # Install the psl base-library from source
 mkdir -p deps
 git clone -b coq-8.10 git@github.com:uds-psl/base-library.git deps/base-library
