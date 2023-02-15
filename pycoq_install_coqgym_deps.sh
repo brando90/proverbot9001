@@ -12,6 +12,7 @@ else
 fi
 ruby -v
 
+
 # -- Git submodule "pull" all submodules (and init it)
 # - git submodule init initializes your local configuration file to track the submodules your repository uses, it just sets up the configuration so that you can use the git submodule update command to clone and update the submodules.
 git submodule init
@@ -24,6 +25,7 @@ git submodule update --init
 # - check it's in specified branch. ref: https://stackoverflow.com/questions/74998463/why-does-git-submodule-status-not-match-the-output-of-git-branch-of-my-submodule
 git submodule status
 
+
 # --- Install all Opam Dependencies: 1. create opam switch needed 2. then install all opam dependencies & projs
 opam list
 # - Create the 8.10.2 switch
@@ -35,11 +37,19 @@ opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
 # We don't need it in all opam switches due to incompatabilities: Run `opam repository add <coq-proj> --all-switches|--set-default' to use it in all existing switches, or in newly created switches, respectively. cmd: opam repository add coq-extra-dev --all-switches
 opam repo add coq-released https://coq.inria.fr/opam/released
 opam repo add psl-opam-repository https://github.com/uds-psl/psl-opam-repository.git
+
+
+# - opam installs coq 8.10
+# this opam package is properly mantained so opam install is fine, no need for opam pin with url+git commit. ref: https://github.com/ejgallego/coq-serapi/issues/320
 opam install -y coq-serapi
+
 opam install -y coq-struct-tact
 opam install -y coq-inf-seq-ext
 
-opam install -y coq-smpl
+# prefering the one that is explicit
+#opam install -y coq-smpl
+opam install -y coq-smpl=8.10
+
 opam install -y coq-int-map
 opam install -y coq-pocklington
 opam install -y coq-mathcomp-ssreflect coq-mathcomp-bigenough coq-mathcomp-algebra
@@ -85,15 +95,13 @@ opam pin add coq-cheerios git+https://github.com/uwplse/cheerios.git#9c7f66e57b9
 opam pin add coq-verdi git+https://github.com/uwplse/verdi.git#f3ef8d77afcac495c0864de119e83b25d294e8bb
 # use opam pin since pin is created to install specific version (e.g. from git, local, etc.)
 
-
 # -- Get metalib for coq-8.10 via commit when getting it through git submodules (unsure if needed)
 #rm -rf coq-projects/metalib
 #git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
 # - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
 git submodule add -f --name coq-projects/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 coq-projects/metalib
 git submodule update --init coq-projects/metalib
-(cd coq-projects/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897)
-(git rev-parse HEAD && cd ..)
+(cd coq-projects/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897 && git rev-parse HEAD)
 # Metalib doesn't install properly through opam unless we use a specific commit.
 eval $(opam env --switch=coq-8.10 --set-switch)
 (cd coq-projects/metalib && opam install .)
@@ -110,18 +118,14 @@ git submodule update --init deps/metalib
 eval $(opam env --switch=coq-8.10 --set-switch)
 (cd deps/metalib && opam install .)
 
-# -- Install metalib for coq-8.10 via opam pin (it seems to overwrite the isntalled versions so let's have opam pin be the last one?)
+# - Install metalib for coq-8.10 via opam pin (it seems to overwrite the isntalled versions so let's have opam pin be the last one?)
 eval $(opam env --switch=coq-8.10 --set-switch)
 opam pin add -y coq-metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897
 
-# - Create the 8.14 switch (todo, why?)
-#opam switch
-#opam switch create coq-8.14 4.07.1
-#eval $(opam env --switch=coq-8.14 --set-switch)
-#opam pin add -y coq 8.14
-# - trying to instal with 8.14 but can't install coq 8.14
-#opam install -y coq-verdi
 
+
+
+# -- Get deps opam packages/projects for coq-8.12
 # Create the coq 8.12 switch
 opam switch create coq-8.12 4.07.1
 eval $(opam env --switch=coq-8.12 --set-switch)
@@ -129,28 +133,94 @@ opam pin add -y coq 8.12.2
 
 # Install the packages that can be installed directly through opam
 opam repo add coq-released https://coq.inria.fr/opam/released
-#opam repository add coq-released --all-switches
 opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
+
+# - opam installs
+# this opam package is properly mantained so opam install is fine, no need for opam pin with url+git commit. ref: https://github.com/ejgallego/coq-serapi/issues/320
 opam install -y coq-serapi
-opam install -y coq-smpl=8.12 coq-metacoq-template coq-metacoq-checker
+
+opam install -y coq-smp
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-smpl=8.12
+
+opam install -y coq-metacoq-template
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-metacoq-template=1.0~beta1+8.12
+
+opam install -y coq-metacoq-checker
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-metacoq-checker=1.0~beta1+8.12
+
 opam install -y coq-equations
-opam install -y coq-mathcomp-ssreflect coq-mathcomp-algebra coq-mathcomp-field
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-equations=1.2.3+8.12
+
+opam install -y coq-mathcomp-ssreflect
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-mathcomp-ssreflect=1.14.0
+
+opam install -y coq-mathcomp-algebra
+# run bellow in case above break when using the intended coq switch
+opam install -y coq-mathcomp-algebra=1.14.0
+
+opam install -y coq-mathcomp-field
+# run bellow in case above break when using the intended coq switch
+#opam install -y coq-mathcomp-field=1.14.0
+
+# dev seems fine but scary to use dev tag: question for alternative: https://stackoverflow.com/questions/75465305/what-is-the-tag-for-menhir-for-coq-8-12-when-installing-it-with-opam-install-y
 opam install -y menhir
+# run bellow in case above break when using the intended coq switch
+#opam install -y menhir=dev
 
-# - succeeded with 8.12 switch
+# advice of coq-ext-lib version that might be better than bellow ref: https://github.com/coq-community/coq-ext-lib/issues/132
 opam install -y coq-ext-lib
-opam install -y coq-simple-io
+#opam install -y coq-ext-lib=dev  # dev versions always make me unease
+#opam install -y coq-ext-lib=0.11.7  # this seemed to work but it says it downgraded, for now leave as is
 
-# Install some coqgym deps that don't have the right versions in their
-# official opam packages
+# advice of coq-ext-lib version that might be better than bellow ref: https://github.com/Lysxia/coq-simple-io/issues/60
+opam install -y coq-simple-io
+#opam install -y coq-simple-io=dev  # dev versions always make me unease
+#opam install -y coq-simple-io=1.5.0  # this seemed to work but it says it downgraded, for now leave as is
+
+# - Install some coqgym deps that don't have the right versions in their official opam packages
+# Some packages that don't have an official opam repository version don't need commit hashes? ref: https://github.com/UCSD-PL/proverbot9001/issues/90
 git clone git@github.com:uwplse/StructTact.git deps/StructTact
 (cd deps/StructTact && opam install -y .)
+# above worked, but leaving code bellow in case it's needed
+#git clone git@github.com:uwplse/StructTact.git deps/StructTact
+#(cd deps/StructTact && git checkout f8d4f8a0e04df0522a839462e725a48d54145b48 && git rev-parse HEAD)
+#(cd deps/StructTact && opam install -y .)
+
+# Some packages that don't have an official opam repository version don't need commit hashes?
 git clone git@github.com:DistributedComponents/InfSeqExt.git deps/InfSeqExt
 (cd deps/InfSeqExt && opam install -y .)
+# above worked but bellow might have not, but leaving code bellow in case it's needed ref: https://github.com/UCSD-PL/proverbot9001/issues/91
+#git clone git@github.com:DistributedComponents/InfSeqExt.git deps/InfSeqExt
+#(cd deps/InfSeqExt && git checkout 91b2d9bdc580c7ccb5bf2f50fffb6ebabab2715c && git rev-parse HEAD)
+#(cd deps/InfSeqExt && opam install -y .)
+
 # Cheerios has its own issues
 git clone git@github.com:uwplse/cheerios.git deps/cheerios
 (cd deps/cheerios && opam install -y --ignore-constraints-on=coq .)
+## this doesn't seem to do anything different than the above attempt, above uses dev & ends up using cheerios-runtime
+#git clone git@github.com:uwplse/cheerios.git deps/cheerios
+##(cd deps/cheerios && git checkout 9c7f66e57b91f706d70afa8ed99d64ed98ab367d && git rev-parse HEAD)
+#(cd deps/cheerios && git checkout 37a30160b4e232555245fbbfb64acfc3d03fda91 && git rev-parse HEAD)  # right before coq >=8.14 warning
+##(cd deps/cheerios && git checkout 81a8f820e639067fda0082493a18c7a9b30ee69d && git rev-parse HEAD)  # coq >=8.14 warning
+##(cd deps/cheerios && opam install -y .)
+#(cd deps/cheerios && opam install -y --ignore-constraints-on=coq .)
+
+# Verdi has its own issues
+git clone git@github.com:uwplse/verdi.git deps/verdi
 (cd coq-projects/verdi && opam install -y --ignore-constraints-on=coq .)
+# this doesn't seem to do anything different than the above attempt, above uses dev & ends up using verdi-runtime
+#git clone git@github.com:uwplse/verdi.git deps/verdi
+#(cd deps/verdi && git checkout fdb4ede19d2150c254f0ebcfbed4fb9547a734b0 && git rev-parse HEAD)
+#(cd deps/verdi && git checkout 3d22ce073f7d16da58eb8e1aa3c71bf8f588a04f && git rev-parse HEAD)
+#(cd deps/verdi && git checkout 35508f2af94f9da979ece0cbdfa191019f2c5478 && git rev-parse HEAD) # right before coq >=8.14 warning
+#(cd deps/verdi && git checkout cb016cf9d2ae61ff757a0b6fa443b391a5416b63 && git rev-parse HEAD)  # coq >=8.14 warning
+#(cd deps/verdi && opam install -y .)
+
 (cd coq-projects/fcsl-pcm && make "$@" && make install)
 
 # Finally, sync the opam state back to global https://github.com/UCSD-PL/proverbot9001/issues/52
