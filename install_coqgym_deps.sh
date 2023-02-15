@@ -56,7 +56,6 @@ opam install -y coq-equations \
 # specific commit.
 (cd coq-projects/metalib && opam install .)
 
-(cd coq-projects/lin-alg && make "$@" && make install)
 
 # Install the psl base-library from source
 mkdir -p deps
