@@ -199,7 +199,7 @@ git clone git@github.com:DistributedComponents/InfSeqExt.git deps/InfSeqExt
 #(cd deps/InfSeqExt && git checkout 91b2d9bdc580c7ccb5bf2f50fffb6ebabab2715c && git rev-parse HEAD)
 #(cd deps/InfSeqExt && opam install -y .)
 
-# Cheerios has its own issues
+# Cheerios has its own issues, this seems to have worked since cheerios-runtime is present, check later: https://github.com/UCSD-PL/proverbot9001/issues/92
 git clone git@github.com:uwplse/cheerios.git deps/cheerios
 (cd deps/cheerios && opam install -y --ignore-constraints-on=coq .)
 ## this doesn't seem to do anything different than the above attempt, above uses dev & ends up using cheerios-runtime
@@ -210,7 +210,7 @@ git clone git@github.com:uwplse/cheerios.git deps/cheerios
 ##(cd deps/cheerios && opam install -y .)
 #(cd deps/cheerios && opam install -y --ignore-constraints-on=coq .)
 
-# Verdi has its own issues
+# Verdi has its own issues, this doesn't seem to have worked no verdi-runtime, check later: https://github.com/UCSD-PL/proverbot9001/issues/93
 git clone git@github.com:uwplse/verdi.git deps/verdi
 (cd coq-projects/verdi && opam install -y --ignore-constraints-on=coq .)
 # this doesn't seem to do anything different than the above attempt, above uses dev & ends up using verdi-runtime
