@@ -42,30 +42,88 @@ opam repo add psl-opam-repository https://github.com/uds-psl/psl-opam-repository
 # - opam installs coq 8.10
 # this opam package is properly mantained so opam install is fine, no need for opam pin with url+git commit. ref: https://github.com/ejgallego/coq-serapi/issues/320
 opam install -y coq-serapi
+# above works but bellow makes explicit the version
+#opam install -y coq-serapi=8.10.0+0.7.2
 
 opam install -y coq-struct-tact
-opam install -y coq-inf-seq-ext
+# dev seems to work but providing the bottom just in case, bellow works
+#opam pin add -y coq-struct-tact git+https://github.com/uwplse/StructTact.git#b95f041cb83986fb0fe1f9689d7196e2f09a4839
 
-# prefering the one that is explicit
-#opam install -y coq-smpl
-opam install -y coq-smpl=8.10
+opam install -y coq-inf-seq-ext
+# dev seems to work but providing the bottom just in case, bellow seems to work but some warning appear
+#opam pin add -y coq-inf-seq-ext git+https://github.com/DistributedComponents/InfSeqExt.git#19f6359e65ecb872d49208f60bf8951fb76fe091
+
+opam install -y coq-smpl
+# above works, bellow makes explicit the version
+#opam install -y coq-smpl=8.10
+#opam install -y coq-smpl=8.10.2
 
 opam install -y coq-int-map
+# above works, bellow makes explicit the version
+#opam install -y coq-int-map=8.10.0
+
 opam install -y coq-pocklington
-opam install -y coq-mathcomp-ssreflect coq-mathcomp-bigenough coq-mathcomp-algebra
+# dev seems to work but providing the bottom just in case, bellow works
+opam install -y coq-pocklington=8.10.0
+#opam pin add -y coq-pocklington git+https://github.com/coq-community/pocklington.git#1940ddd40622772e1d81a31320431799a437c512
+
+opam install -y coq-mathcomp-ssreflect
+# dev seems to work but providing the bottom just in case, bellow works
+opam install -y coq-mathcomp-ssreflect=1.11.0
+
+opam install -y coq-mathcomp-bigenough
+# dev seems to work but providing the bottom just in case, bellow works
+#opam install -y coq-mathcomp-bigenough=1.0.1
+
+opam install -y coq-mathcomp-algebra
+# dev seems to work but providing the bottom just in case, bellow works
+#opam install -y coq-mathcomp-algebra=1.11.0
+
 opam install -y coq-fcsl-pcm
+opam install -y coq-fcsl-pcm=1.2.0
+
 opam install -y coq-list-string
+# dev seems to work but providing the bottom just in case, bellow works
+#opam install -y coq-list-string=2.1.2
+
 opam install -y coq-error-handlers
+# dev seems to work but providing the bottom just in case, bellow works
+#opam install -y coq-error-handlers=1.2.0
+
 opam install -y coq-function-ninjas
+# dev seems to work but providing the bottom just in case, bellow works
+opam install -y coq-function-ninjas=1.0.0
+
 opam install -y coq-algebra
+# dev seems to work but providing the bottom just in case, bellow works
+#opam install -y coq-algebra=8.10.0
+
 opam install -y coq-zorns-lemma
+# dev seems to work but providing the bottom just in case, bellow works
+opam install -y coq-zorns-lemma=8.10.0
+
 opam pin -y add menhir 20190626
 # coq-equations seems to rely on ocamlfind for it's build, but doesn't
 # list it as a dependency, so opam sometimes tries to install
 # coq-equations before ocamlfind. Splitting this into a separate
 # install call prevents that. https://stackoverflow.com/questions/75452026/how-do-i-install-ocamlfind-first-properly-before-other-opam-packages-without-roo, untested for now
-opam install -y ocamlfind
-opam install -y coq-equations coq-metacoq coq-metacoq-checker coq-metacoq-template
+opam install -y ocamlfind=1.9.1
+
+opam install -y coq-equations
+# bellow seems to work too
+#opam install -y coq-equations=1.2.1+8.10
+
+opam install -y coq-metacoq
+# below seems to work too
+#opam install -y coq-metacoq=1.0~alpha2+8.10
+
+opam install -y coq-metacoq-checker
+# below seems to work too
+#opam install -y coq-metacoq-checker=1.0~alpha2+8.10
+
+opam install -y coq-metacoq-template
+# below seems to work too
+#opam install -y coq-metacoq-template=1.0~alpha2+8.10
 
 # lin-alg-8.10 needs opam switch coq-8.10
 git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
