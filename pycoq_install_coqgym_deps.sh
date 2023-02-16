@@ -221,7 +221,11 @@ git clone git@github.com:uwplse/verdi.git deps/verdi
 #(cd deps/verdi && git checkout cb016cf9d2ae61ff757a0b6fa443b391a5416b63 && git rev-parse HEAD)  # coq >=8.14 warning
 #(cd deps/verdi && opam install -y .)
 
-(cd coq-projects/fcsl-pcm && make "$@" && make install)
+# Install fcsl-pcm
+git clone git@github.com:imdea-software/fcsl-pcm.git coq-projects/fcsl-pcm
+(cd coq-projects/fcsl-pcm && git checkout fab4dfe3ca58ecf8aefeb8fa4ac4a2659b231f24 && git rev-parse HEAD)
+(cd coq-projects/fcsl-pcm && opam install -y .)
+#(cd coq-projects/fcsl-pcm && make "$@" && make install)
 
 # Finally, sync the opam state back to global https://github.com/UCSD-PL/proverbot9001/issues/52
 # NOT NEEDED rsync -av --delete /tmp/${USER}_dot_opam/ $HOME/.opam.dir | tqdm --desc="Writing shared opam state" > /dev/null
