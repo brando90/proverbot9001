@@ -1,7 +1,5 @@
-# Goal: install of coq projs then use pycoq to mine data set
+# Goal: install of coq projs then use pycoq to mine data set, main ref for building Provebot's data set https://github.com/UCSD-PL/proverbot9001/issues/27
 source $AFS/.bashrc.lfs
-#conda activate mds_env_gpu
-#conda activate metalearning_gpu
 conda activate iit_synthesis
 export CUDA_VISIBLE_DEVICES=5; export SLURM_JOBID=$(python -c "import random;print(random.randint(0, 1_000_000))")
 echo CUDA_VISIBLE_DEVICES = $CUDA_VISIBLE_DEVICES; echo SLURM_JOBID = $SLURM_JOBID; echo hostname = $(hostname)
@@ -11,16 +9,16 @@ nvidia-smi; (echo "GPU_ID PID MEM% UTIL% UID APP" ; for GPU in 0 1 2 3 ; do for 
 
 (echo "GPU_ID PID UID APP" ; for GPU in 0 1 2 3 ; do for PID in $( nvidia-smi -q --id=${GPU} --display=PIDS | awk '/Process ID/{print $NF}') ; do echo -n "${GPU} ${PID} " ; ps -up ${PID} | awk 'NR-1 {print $1,$NF}' ; done ; done) | column -t
 
-# -- Build dependencies for Coq Projects built later, which will later be used for data mining by PyCoq. Also install opam
+# --- Step1: Build dependencies for Coq Projects built later, which will later be used for data mining by PyCoq. Also install opam
 bash $HOME/proverbot9001/pycoq_install_coqgym_deps.sh
 
-# - install projs
+# --- Step2: create the make files for the coq projects/packages later build to work
 sh $HOME/proverbot9001/pycoq_build_coq_projects.sh
 
-# - scrape data (done in pycoq)
+# - proverbot gets data differently: scrape data (done in pycoq)
 # sh pycoq_scrape_coq_projects.sh
 
-# --- Mine data using PyCoq
+# --- Step3: Mine data using PyCoq
 # -- make sure conda & env we need is setup
 source $HOME/proverbot9001/install_conda.sh
 source $HOME/install_iit_python_env.sh

@@ -21,6 +21,7 @@ for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
     SBATCH_FLAGS=""
 
     echo "#!/usr/bin/env bash" > coq-projects/$project/make.sh
+    # puts the init_cmd that alex's umass cluster needs in the make file for each coq proj/pkg ref: https://github.com/UCSD-PL/proverbot9001/issues/54
     echo ${INIT_CMD} >> coq-projects/$project/make.sh
     if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"build_command\")" \
          coqgym_projs_splits.json); then

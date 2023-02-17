@@ -1,45 +1,43 @@
 #!/usr/bin/env bash
 # source swarm-prelude.sh
+# --- This file is for creating the make file the Coq Projects/Pkgs need
+cd $HOME/proverbot9001/
 
-#source ~/.bashrc.lfs
-#conda activate iit_synthesis
-#echo $HOME
-#cd $HOME/proverbot9001
-#realpath .
+# - Install jq without sudo if not present already in $HOME/.local/bin
+if ! command -v jq &> /dev/null; then
+  echo "jq is not installed. Installing..."
+  sh $HOME/proverbot9001/install_jq.sh
+else
+  echo "jq is already installed."
+fi
 
-#echo "done setting up the .bashrc.lfs etc."
-
-#bash pycoq_build_coq_projects.sh
-
-# - for weird umass cluster permission, we don't need it I think: https://github.com/UCSD-PL/proverbot9001/issues/54
-#INIT_CMD="~/opam-scripts/read-opam.sh"
-#INIT_CMD=""
-
+# - I can't tell if Alex's script actually needs this but leave it anyway for now
 NTHREADS=1
-#while getopts ":j:" opt; do
-#  case "$opt" in
-#    j)
-#      NTHREADS="${OPTARG}"
-#      ;;
-#  esac
-#done
 
 # Make sure ruby is in the path
 ruby -v
+if command -v ruby &> /dev/null; then
+    echo "Ruby is available in the terminal's path."
+else
+    echo "Ruby is not in the terminal's path. Halting..."
+    exit 1
+fi
+# ruby should be in .local/bin in ampere so .lcocal/bin should be in the path
+# echo $PATH | tr ':' '\n'
 #export PATH=$HOME/.local/bin:$PATH
 
-# - doing the git submodule thing is likely a good idea for safety but until lin-alg is fixed it's a problem
-#git submodule init && git submodule update
+echo "\n-- Create all the make files for the Coq projects/packages needed to create data set..."
+#coq_projs_path_2_json = compcert_projs_splits.json
+coq_projs_path_2_json = coqgym_projs_splits.json
+num_success_make_files = 0
+for project in $(jq -r '.[].project_name' $coq_projs_path_2_json); do
+    echo "project=" $project
+    echo "current coq project project=" $project
+    exit 1
 
-echo "-- about to build the make files for the coq projects:"
-
-# change to point to absolute path
-#for project in $(jq -r '.[].project_name' coqgym_projs_splits.json); do
-for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
-    echo $project
-
+    # -- Create the build command to build the current coq project in variable $project
     echo "#!/usr/bin/env bash" > coq-projects/$project/make.sh
-    echo ${INIT_CMD} >> coq-projects/$project/make.sh
+    # - jq does some json parsing and gets the build_command in the .json file documenting the requirements for each coq proj/pkg
     if $(jq -e ".[] | select(.project_name == \"$project\") | has(\"build_command\")" \
          coqgym_projs_splits.json); then
         BUILD=$(jq -r ".[] | select(.project_name == \"$project\") | .build_command" \
@@ -48,22 +46,26 @@ for project in $(jq -r '.[].project_name' compcert_projs_splits.json); do
         BUILD="make"
     fi
 
+    # - jq does some json parsing to get the opam switch needed for the coq proj/pkg to build
     SWITCH=$(jq -r ".[] | select(.project_name == \"$project\") | .switch" coqgym_projs_splits.json)
 
-    # todo: why not just call opam switch? or `opam switch set {$SWITCH}`
+    # - Adds to the make file for the current project the command to set the opam switch, eval is fine in bash, no further questions needed.
     echo "eval \"$(opam env --set-switch --switch=$SWITCH)\"" >> coq-projects/$project/make.sh
 
+    # - This Bash command appends the value of the $BUILD (the command that specifies how to build this coq proj/pkg) & any command-line arguments passed $@ to the script to the file called make.sh
     echo "$BUILD $@" >> coq-projects/$project/make.sh
+    # makes sure permission are set right, idk if I need it but it can't hurt
     chmod u+x coq-projects/$project/make.sh
-#    (cd coq-projects/$project && sbatch --cpus-per-task=${NTHREADS} $SBATCH_FLAGS -o build-output.out make.sh)
-    realpath coq-projects/$project/make.sh
-    cat coq-projects/$project/make.sh
+    # cat coq-projects/$project/make.sh  # if your curious to see the make file, it sets up a bunch of things and then at the end is the BUILD command for this coq proj
+
+    # - Done building make.sh file for current coq proj/pkg
+    num_success_make_files=$((num_success_make_files+1))
+    echo
 done
+total_num_coq_projs=$(jq length your_file.json)
 
-echo "done creating all the make files!"
+echo "-- Done creating all the make files for all coq projects/packages in Proverbot9001's Coq-Gym!"
+echo "num_success_make_files=" $num_success_make_files
+echo "total_num_coq_projs=" $total_num_coq_projs
 
-cd /afs/cs.stanford.edu/u/brando9/proverbot9001/CompCert/
-configure x86_64-linux
-make .
-#
-#configure x86_64-linux && make /afs/cs.stanford.edu/u/brando9/proverbot9001/CompCert/make.sh
+
