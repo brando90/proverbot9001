@@ -4,11 +4,13 @@
 cd $HOME/proverbot9001/
 
 # - Install jq without sudo if not present already in $HOME/.local/bin
-if ! command -v jq &> /dev/null; then
-  echo "jq is not installed. Installing..."
-  sh $HOME/proverbot9001/install_jq.sh
+jq --version
+if which jq >/dev/null; then
+  echo "jq is installed"
+  jq --version
 else
-  echo "jq is already installed."
+  echo "jq is not installed"
+  sh $HOME/proverbot9001/install_jq.sh
 fi
 
 # - I can't tell if Alex's script actually needs this but leave it anyway for now
