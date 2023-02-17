@@ -29,13 +29,15 @@ fi
 #export PATH=$HOME/.local/bin:$PATH
 
 echo "\n-- Create all the make files for the Coq projects/packages needed to create data set..."
-#coq_projs_path_2_json = compcert_projs_splits.json
-coq_projs_path_2_json = coqgym_projs_splits.json
+#coq_projs_path_2_json=compcert_projs_splits.json
+coq_projs_path_2_json=coqgym_projs_splits.json
+echo "coq_projs_path_2_json="$coq_projs_path_2_json
+realpath .
+
 num_success_make_files = 0
 for project in $(jq -r '.[].project_name' $coq_projs_path_2_json); do
     echo "project=" $project
-    echo "current coq project project=" $project
-    exit 1
+    echo "current coq project project="$project
 
     # -- Create the build command to build the current coq project in variable $project
     echo "#!/usr/bin/env bash" > coq-projects/$project/make.sh
@@ -64,10 +66,10 @@ for project in $(jq -r '.[].project_name' $coq_projs_path_2_json); do
     num_success_make_files=$((num_success_make_files+1))
     echo
 done
-total_num_coq_projs=$(jq length your_file.json)
+total_num_coq_projs=$(jq length $coq_projs_path_2_json)
 
 echo "-- Done creating all the make files for all coq projects/packages in Proverbot9001's Coq-Gym!"
-echo "num_success_make_files=" $num_success_make_files
-echo "total_num_coq_projs=" $total_num_coq_projs
+echo "num_success_make_files="$num_success_make_files
+echo "total_num_coq_projs="$total_num_coq_projs
 
 

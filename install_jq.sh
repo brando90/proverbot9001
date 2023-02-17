@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ref: https://stackoverflow.com/questions/33184780/install-jq-json-processor-on-ubuntu-10-04/75489241#75489241
 
 # conda activate jq_install_env
 
