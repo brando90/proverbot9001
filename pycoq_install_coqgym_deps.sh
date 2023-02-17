@@ -27,7 +27,7 @@ git submodule status
 
 
 # --- Install all Opam Dependencies: 1. create opam switch needed 2. then install all opam dependencies & projs
-opam list
+#opam list
 # - Create the 8.10.2 switch
 opam switch create coq-8.10 4.07.1
 eval $(opam env --switch=coq-8.10 --set-switch)
@@ -51,7 +51,7 @@ opam install -y coq-struct-tact
 
 opam install -y coq-inf-seq-ext
 # dev seems to work but providing the bottom just in case, bellow seems to work but some warning appear
-#opam pin add -y coq-inf-seq-ext git+https://github.com/DistributedComponents/InfSeqExt.git#19f6359e65ecb872d49208f60bf8951fb76fe091
+opam pin add -y coq-inf-seq-ext git+https://github.com/DistributedComponents/InfSeqExt.git#19f6359e65ecb872d49208f60bf8951fb76fe091
 
 opam install -y coq-smpl
 # above works, bellow makes explicit the version
@@ -141,47 +141,42 @@ git clone git@github.com:davidnowak/bellantonicook.git deps/bellantonicook
 (cd deps/bellantonicook && make "$@" && make install)
 opam list | grep base-library
 
-# -- Get cheerios, req to have old versions work in opam: https://github.com/uwplse/cheerios/issues/17
+# -- Get cheerios, req to have old versions work in opam: https://github.com/uwplse/cheerios/issues/17, https://github.com/UCSD-PL/proverbot9001/issues/92
 eval $(opam env --switch=coq-8.10 --set-switch)
-# opam install might give issues since it gets the most recent version from the official OPAM repository
-#opam -y install coq-cheerios
-#opam install -y coq-verdi
-# use opam pin since pin is created to install specific version (e.g. from git, local, etc.)
+# opam install might give issues since it gets the most recent version from the official OPAM repository, opam devs can overwrite what they push to the OPAM repo, thus: use opam pin since pin is created to install specific version (e.g. from git, local, etc.)
+# - cheerios
+# suggested by alex https://github.com/uwplse/cheerios/commits/f0c7659c44999c6cfcd484dc3182affc3ff4248a for 8.10 but mine seems fine
+#opam pin add coq-cheerios git+https://github.com/uwplse/cheerios.git#f0c7659c44999c6cfcd484dc3182affc3ff4248a
+# my cheerios installs/pins
 opam pin add coq-cheerios git+https://github.com/uwplse/cheerios.git#9c7f66e57b91f706d70afa8ed99d64ed98ab367
-#opam pin add coq-cheerios https://github.com/uwplse/cheerios.git\#9c7f66e57b91f706d70afa8ed99d64ed98ab367d
+
+# - verdi
+# bellow suggested by alex https://github.com/UCSD-PL/proverbot9001/issues/93 likey for 8.10, but mine seems fine
+# opam pin add coq-verdi git+https://github.com/uwplse/verdi.git#064cc4fb2347453bf695776ed820ffb5fbc1d804
+# my verdi installs/pins
 #opam pin add coq-verdi https://github.com/uwplse/verdi/tree/f3ef8d77afcac495c0864de119e83b25d294e8bb
 opam pin add coq-verdi git+https://github.com/uwplse/verdi.git#f3ef8d77afcac495c0864de119e83b25d294e8bb
-# use opam pin since pin is created to install specific version (e.g. from git, local, etc.)
 
 # -- Get metalib for coq-8.10 via commit when getting it through git submodules (unsure if needed)
-#rm -rf coq-projects/metalib
-#git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
 # - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
+#git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
 git submodule add -f --name coq-projects/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 coq-projects/metalib
 git submodule update --init coq-projects/metalib
 (cd coq-projects/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897 && git rev-parse HEAD)
-# Metalib doesn't install properly through opam unless we use a specific commit.
-eval $(opam env --switch=coq-8.10 --set-switch)
 (cd coq-projects/metalib && opam install .)
 
-# install it again since I think his code has pointers to a version under deps, could unify with above but it's less work to just accept as is and install it, ref: https://github.com/UCSD-PL/proverbot9001/issues/77
-rm -rf deps/metalib
-#git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git deps/metalib
-# - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
-git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 deps/metalib
-git submodule update --init deps/metalib
-(cd deps/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897)
-(git rev-parse HEAD && cd ..)
-# Metalib doesn't install properly through opam unless we use a specific commit.
-eval $(opam env --switch=coq-8.10 --set-switch)
-(cd deps/metalib && opam install .)
+# bellow likely not needed: https://github.com/UCSD-PL/proverbot9001/issues/86
+## install it again since I think his code has pointers to a version under deps, could unify with above but it's less work to just accept as is and install it, ref: https://github.com/UCSD-PL/proverbot9001/issues/77
+## - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
+##git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git deps/metalib
+#git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 deps/metalib
+#git submodule update --init deps/metalib
+#(cd deps/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897)
+#(git rev-parse HEAD && cd ..)
+#(cd deps/metalib && opam install .)
 
 # - Install metalib for coq-8.10 via opam pin (it seems to overwrite the isntalled versions so let's have opam pin be the last one?)
-eval $(opam env --switch=coq-8.10 --set-switch)
 opam pin add -y coq-metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897
-
-
-
 
 # -- Get deps opam packages/projects for coq-8.12
 # Create the coq 8.12 switch
@@ -225,9 +220,10 @@ opam install -y coq-mathcomp-field
 # run bellow in case above break when using the intended coq switch
 #opam install -y coq-mathcomp-field=1.14.0
 
-# dev seems fine but scary to use dev tag: question for alternative: https://stackoverflow.com/questions/75465305/what-is-the-tag-for-menhir-for-coq-8-12-when-installing-it-with-opam-install-y
 opam install -y menhir
-# run bellow in case above break when using the intended coq switch
+# ref for commit compatible in a stable way with coq 8.12 https://stackoverflow.com/questions/75465305/what-is-the-tag-for-menhir-for-coq-8-12-when-installing-it-with-opam-install-y
+#opam pin add -y menhir 20190626
+# 20190626 likely more stable than dev but if dev works I suppose it's more up to date and better
 #opam install -y menhir=dev
 
 # advice of coq-ext-lib version that might be better than bellow ref: https://github.com/coq-community/coq-ext-lib/issues/132
@@ -241,12 +237,16 @@ opam install -y coq-simple-io
 #opam install -y coq-simple-io=1.5.0  # this seemed to work but it says it downgraded, for now leave as is
 
 # - Install some coqgym deps that don't have the right versions in their official opam packages
-# Some packages that don't have an official opam repository version don't need commit hashes? ref: https://github.com/UCSD-PL/proverbot9001/issues/90
+# The head commit at this time worked, so I am leaving it hardcoded after this install. If bellow fails use the hardcoded commit one. Details, ref: https://github.com/UCSD-PL/proverbot9001/issues/90
 git clone git@github.com:uwplse/StructTact.git deps/StructTact
 (cd deps/StructTact && opam install -y .)
 # above worked, but leaving code bellow in case it's needed
 #git clone git@github.com:uwplse/StructTact.git deps/StructTact
 #(cd deps/StructTact && git checkout f8d4f8a0e04df0522a839462e725a48d54145b48 && git rev-parse HEAD)
+#(cd deps/StructTact && opam install -y .)
+# if above fails perhaps this will work? most recent commit at this time 2f2ff253be29bb09f36cab96d036419b18a95b00, ref: https://github.com/UCSD-PL/proverbot9001/issues/90
+#git clone git@github.com:uwplse/StructTact.git deps/StructTact
+#(cd deps/StructTact && git checkout 2f2ff253be29bb09f36cab96d036419b18a95b00 && git rev-parse HEAD)
 #(cd deps/StructTact && opam install -y .)
 
 # Some packages that don't have an official opam repository version don't need commit hashes?
@@ -277,6 +277,8 @@ git clone git@github.com:uwplse/verdi.git deps/verdi
 #(cd deps/verdi && git checkout 3d22ce073f7d16da58eb8e1aa3c71bf8f588a04f && git rev-parse HEAD)
 #(cd deps/verdi && git checkout 35508f2af94f9da979ece0cbdfa191019f2c5478 && git rev-parse HEAD) # right before coq >=8.14 warning
 #(cd deps/verdi && git checkout cb016cf9d2ae61ff757a0b6fa443b391a5416b63 && git rev-parse HEAD)  # coq >=8.14 warning
+# seperate commit suggested by https://github.com/UCSD-PL/proverbot9001/issues/93 idk if its for 8.12 but I assume not due to original authors saying they don't support 8.12 and Alex saying proverbot doesn't need 8.12 for cheerios
+#(cd deps/verdi && git checkout 064cc4fb2347453bf695776ed820ffb5fbc1d804 && git rev-parse HEAD)  # coq >=8.14 warning
 #(cd deps/verdi && opam install -y .)
 
 # Install fcsl-pcm

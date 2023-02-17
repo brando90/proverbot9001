@@ -11,13 +11,11 @@ nvidia-smi; (echo "GPU_ID PID MEM% UTIL% UID APP" ; for GPU in 0 1 2 3 ; do for 
 
 (echo "GPU_ID PID UID APP" ; for GPU in 0 1 2 3 ; do for PID in $( nvidia-smi -q --id=${GPU} --display=PIDS | awk '/Process ID/{print $NF}') ; do echo -n "${GPU} ${PID} " ; ps -up ${PID} | awk 'NR-1 {print $1,$NF}' ; done ; done) | column -t
 
-
-# --- make (& build) PyCoq's Proverbot's CoqGym Coq projects
-# - build dependencies
+# -- Build dependencies for Coq Projects built later, which will later be used for data mining by PyCoq. Also install opam
 bash $HOME/proverbot9001/pycoq_install_coqgym_deps.sh
 
 # - install projs
-# sh pycoq_build_coq_projects.sh
+sh $HOME/proverbot9001/pycoq_build_coq_projects.sh
 
 # - scrape data (done in pycoq)
 # sh pycoq_scrape_coq_projects.sh
