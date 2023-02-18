@@ -13,31 +13,24 @@ nvidia-smi; (echo "GPU_ID PID MEM% UTIL% UID APP" ; for GPU in 0 1 2 3 ; do for 
 bash $HOME/proverbot9001/pycoq_install_coqgym_deps.sh
 
 # --- Step2: create the make files for the coq projects/packages later build to work
+cd $HOME/proverbot9001/
 sh $HOME/proverbot9001/pycoq_build_coq_projects.sh
 
 # - proverbot gets data differently: scrape data (done in pycoq)
 # sh pycoq_scrape_coq_projects.sh
 
 # --- Step3: Mine data using PyCoq
-# -- make sure conda & env we need is setup
+# - make sure conda & env we need is setup
 source $HOME/proverbot9001/install_conda.sh
 source $HOME/install_iit_python_env.sh
 
-# -- set up env for Python
+# - Set up env for Python
 echo 'make sure bash env is setup for python script (wish I could run the python script indepdently of anything else), for now see my .bashrc.user and .bashrc.lfs'
 echo '.bashrc.ls: https://github.com/brando90/.dotfiles/blob/master/.bashrc.lfs'; echo '.bashrc.user: https://github.com/brando90/.dotfiles/blob/master/.bashrc.user'
 #source $AFS/.bashrc.lfs
 source /afs/cs.stanford.edu/u/brando9/.bashrc.lfs
+
+# - Mine with PyCoq
+cd $HOME/iit-term-synthesis
 conda activate iit_synthesis
-
-# -- mine
-python -u ~/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/pycoq_lf_debug/' --save_flatten_data_set_as_single_json_file
-
-# - brando's debug
-#python -m pdb -c continue ~/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/debug_proj/' --split train --save_flatten_data_set_as_single_json_file
-
-# - compcert
-#python ~/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/compcert/' --split train --save_flatten_data_set_as_single_json_file
-
-# - coqgym
-#python ~/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
+python $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
