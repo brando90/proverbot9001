@@ -129,6 +129,7 @@ opam install -y coq-metacoq-template
 git submodule add -f --name coq-projects/lin-alg-8.10 git@github.com:HazardousPeach/lin-alg-8.10.git coq-projects/lin-alg
 git submodule update --init coq-projects/lin-alg
 (cd coq-projects/lin-alg && make "$@" && make install)
+#(cd coq-projects/lin-alg && opam install -y .)  # no make file it seems
 # to confirm it installed look for lin-alg: https://github.com/UCSD-PL/proverbot9001/issues/81, for now you can confirm by trying to install it again and it all looks alright
 #opam list
 #opam list | grep lin-alg-8.10
@@ -159,21 +160,21 @@ opam pin add coq-verdi git+https://github.com/uwplse/verdi.git#f3ef8d77afcac495c
 
 # -- Get metalib for coq-8.10 via commit when getting it through git submodules (unsure if needed)
 # - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
-#git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
-git submodule add -f --name coq-projects/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 coq-projects/metalib
+git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git coq-projects/metalib
+#git submodule add -f --name coq-projects/metalib https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 coq-projects/metalib
 git submodule update --init coq-projects/metalib
 (cd coq-projects/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897 && git rev-parse HEAD)
-(cd coq-projects/metalib && opam install .)
+(cd coq-projects/metalib && opam install -y .)
 
 # bellow likely not needed: https://github.com/UCSD-PL/proverbot9001/issues/86
-## install it again since I think his code has pointers to a version under deps, could unify with above but it's less work to just accept as is and install it, ref: https://github.com/UCSD-PL/proverbot9001/issues/77
-## - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
-##git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git deps/metalib
-#git submodule add -f --name deps/metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 deps/metalib
-#git submodule update --init deps/metalib
-#(cd deps/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897)
-#(git rev-parse HEAD && cd ..)
-#(cd deps/metalib && opam install .)
+# install it again since I think his code has pointers to a version under deps, could unify with above but it's less work to just accept as is and install it, ref: https://github.com/UCSD-PL/proverbot9001/issues/77
+# - use the one with commit even if it doesn't work just to document the commit explicitly in the .modules file
+git submodule add -f --name deps/metalib https://github.com/plclub/metalib.git deps/metalib
+#git submodule add -f --name deps/metalib https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897 deps/metalib
+git submodule update --init deps/metalib
+(cd deps/metalib && git checkout 104fd9efbfd048b7df25dbac7b971f41e8e67897)
+(git rev-parse HEAD && cd ..)
+(cd deps/metalib && opam install -y .)
 
 # - Install metalib for coq-8.10 via opam pin (it seems to overwrite the isntalled versions so let's have opam pin be the last one?)
 opam pin add -y coq-metalib git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897

@@ -133,11 +133,11 @@
 	url = https://github.com/coq-community/topology.git
 [submodule "coq-projects/lin-alg-8.10"]
 	path = coq-projects/lin-alg
-	url = https://github.com/HazardousPeach/lin-alg-8.10.git
+	url = git@github.com:HazardousPeach/lin-alg-8.10.git
 [submodule "coq-projects/VST"]
 	path = coq-projects/VST
 	url = https://github.com/HazardousPeach/VST.git
-        branch = v8.10.2
+    branch = v8.10.2
 [submodule "coq-projects/coq-library-undecidability"]
 	path = coq-projects/coq-library-undecidability
 	url = https://github.com/HazardousPeach/coq-library-undecidability.git
@@ -176,4 +176,4 @@
 	url = https://github.com/coq-contribs/mod-red.git
 [submodule "coq-projects/metalib"]
 	path = coq-projects/metalib
-	url = "git+https://github.com/plclub/metalib.git#104fd9efbfd048b7df25dbac7b971f41e8e67897"
+	url = https://github.com/plclub/metalib.git

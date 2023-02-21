@@ -18,3 +18,7 @@ report/
 *.mypy_cache/*
 */.mypy_cache/*
 *.lock
+
+.DS_Store
+.idea/
+/deps/
