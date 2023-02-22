@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# bash ~/proverbot9001/pycoq_build_coq_projects.sh
 # source swarm-prelude.sh
 # --- This file is for creating the make file the Coq Projects/Pkgs need
 cd $HOME/proverbot9001/
@@ -54,10 +55,10 @@ for project in $(jq -r '.[].project_name' $coq_projs_path_2_json); do
     SWITCH=$(jq -r ".[] | select(.project_name == \"$project\") | .switch" coqgym_projs_splits.json)
 
     # - Adds to the make file for the current project the command to set the opam switch, eval is fine in bash, no further questions needed.
-    echo "eval \"$(opam env --set-switch --switch=$SWITCH)\"" >> coq-projects/$project/make.sh
+    echo 'eval \"$(opam env --set-switch --switch=$SWITCH)\"' >> coq-projects/$project/make.sh
 
     # - This Bash command appends the value of the $BUILD (the command that specifies how to build this coq proj/pkg) & any command-line arguments passed $@ to the script to the file called make.sh
-    echo "$BUILD $@" >> coq-projects/$project/make.sh
+     echo "$BUILD $@" >> coq-projects/$project/make.sh
     # makes sure permission are set right, idk if I need it but it can't hurt
     chmod u+x coq-projects/$project/make.sh
     # cat coq-projects/$project/make.sh  # if your curious to see the make file, it sets up a bunch of things and then at the end is the BUILD command for this coq proj

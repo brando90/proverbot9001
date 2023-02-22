@@ -9,6 +9,19 @@ nvidia-smi; (echo "GPU_ID PID MEM% UTIL% UID APP" ; for GPU in 0 1 2 3 ; do for 
 
 (echo "GPU_ID PID UID APP" ; for GPU in 0 1 2 3 ; do for PID in $( nvidia-smi -q --id=${GPU} --display=PIDS | awk '/Process ID/{print $NF}') ; do echo -n "${GPU} ${PID} " ; ps -up ${PID} | awk 'NR-1 {print $1,$NF}' ; done ; done) | column -t
 
+# --- Step 0: Optiona, make sure coq-projects are there
+# run unzip if for some reaosn coq-projects is missing
+unzip $HOME/proverbot9001/coq-projects.zip -d $HOME/proverbot9001/coq-projects
+# 136
+find $HOME/proverbot9001/coq-projects -maxdepth 1 -type d | wc -l
+# 124
+total_num_coq_projs=$(jq length coqgym_projs_splits.json)
+echo total_num_coq_projs = $total_num_coq_projs
+# git submodule init
+git submodule init
+git submodule update --init
+git submodule status
+
 # --- Step1: Build dependencies for Coq Projects built later, which will later be used for data mining by PyCoq. Also install opam
 bash $HOME/proverbot9001/pycoq_install_coqgym_deps.sh
 
@@ -29,7 +42,6 @@ echo 'make sure bash env is setup for python script (wish I could run the python
 echo '.bashrc.ls: https://github.com/brando90/.dotfiles/blob/master/.bashrc.lfs'; echo '.bashrc.user: https://github.com/brando90/.dotfiles/blob/master/.bashrc.user'
 #source $AFS/.bashrc.lfs
 source /afs/cs.stanford.edu/u/brando9/.bashrc.lfs
-
 # - Mine with PyCoq
 cd $HOME/iit-term-synthesis
 conda activate iit_synthesis
