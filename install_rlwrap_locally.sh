@@ -5,8 +5,6 @@
 mkdir -p ~/.local/bin/
 
 # - download most recent version of rlwrap -- as of this writing it is 0.46.1 see: https://github.com/hanslub42/rlwrap/releases
-
-# download rlwrap-0.46.1.tar.gz using wget from https://github.com/hanslub42/rlwrap/releases
 cd ~
 wget https://github.com/hanslub42/rlwrap/releases/download/0.46.1/rlwrap-0.46.1.tar.gz
 # untar rlwrap-0.46.1.tar.gz
@@ -21,6 +19,7 @@ make install
 rlwrap --version
 
 # - clean up
+cd ~
 rm -rf ~/rlwrap-0.46.1
 rm ~/rlwrap-0.46.1.tar.gz
 
@@ -32,4 +31,6 @@ if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
 fi
 tr ':' '\n' <<< "$PATH"
 
+# - check install (should be the chosen one above)
+rlwrap --version
 
