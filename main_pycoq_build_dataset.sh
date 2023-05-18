@@ -1,4 +1,12 @@
 # Goal: install of coq projs then use pycoq to mine data set, main ref for building Provebot's data set https://github.com/UCSD-PL/proverbot9001/issues/27
+# ssh brando9@hyperturing1.stanford.edu
+# ssh brando9@hyperturing2.stanford.edu
+# ssh brando9@turing1.stanford.edu
+# ssh brando9@ampere1.stanford.edu
+# ssh brando9@ampere2.stanford.edu
+#ssh brando9@ampere3.stanford.edu
+#ssh brando9@ampere4.stanford.edu
+
 source $AFS/.bashrc.lfs
 conda activate iit_synthesis
 export CUDA_VISIBLE_DEVICES=5; export SLURM_JOBID=$(python -c "import random;print(random.randint(0, 1_000_000))")
@@ -46,4 +54,5 @@ source /afs/cs.stanford.edu/u/brando9/.bashrc.lfs
 cd $HOME/iit-term-synthesis
 conda activate iit_synthesis
 #python $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
-python -m pdb -c continue $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
+#python -m pdb -c continue $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
+python -m pdb -c continue ~/pycoq/tutorial/tutorial_pycoq_execute_stmts_coq_file_for_coq_projs.py
