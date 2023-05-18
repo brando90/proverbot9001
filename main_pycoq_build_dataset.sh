@@ -55,4 +55,5 @@ cd $HOME/iit-term-synthesis
 conda activate iit_synthesis
 #python $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
 #python -m pdb -c continue $HOME/iit-term-synthesis/iit-term-synthesis-src/data_pkg/data_gen.py --path_to_save_new_dataset '~/data/coqgym/' --split train --save_flatten_data_set_as_single_json_file
-python -m pdb -c continue ~/pycoq/tutorial/tutorial_pycoq_execute_stmts_coq_file_for_coq_projs.py
+#python -m pdb -c continue ~/pycoq/tutorial/tutorial_pycoq_execute_stmts_coq_file_for_coq_projs.py
+python  ~/pycoq/tutorial/tutorial_pycoq_execute_stmts_coq_file_for_coq_projs.py
